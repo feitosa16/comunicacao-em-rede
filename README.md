@@ -1,2 +1,5 @@
-# comunicacao-em-rede
-Repositório destinado ao armazenamento de um projeto que visa comunicação em rede para a disciplina de Programação Orientada a Objetos 
+# Projeto II - ComunicaÇÃO em Rede 
+![Em Desenvolvimento](https://img.shields.io/badge/Status-em-Desenvolvimento-yellow)
+
+Este projeto foi desenvolvido como parte da disciplina SI400 - Programação Orientada a Objetos II, com o objetivo de consolidar os conhecimentos sobre programação com linguagem JAVA. 
+
