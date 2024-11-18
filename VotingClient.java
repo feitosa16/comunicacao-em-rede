@@ -1,50 +1,66 @@
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
+import java.util.Map;
 
 public class VotingClient {
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 12345;
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    private String question;
+    private java.util.List<String> options;
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-        
-        try (ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream())) {
+    public boolean connect() {
+        try {
+            socket = new Socket("localhost", 5000);
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
+            
+            // Solicitar dados da eleição
+            out.writeObject("GET_ELECTION_DATA");
+            question = (String) in.readObject();
+            options = (java.util.List<String>) in.readObject();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public Map<Integer, Integer> getPartialResults() {
+        try {
+            out.writeObject("GET_RESULTS");
+            return (Map<Integer, Integer>) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-        
-            String question = (String) inputStream.readObject();
-            String[] options = (String[]) inputStream.readObject();
+    public String getQuestion() {
+        return question;
+    }
 
-       
-            System.out.println(question);
-            for (int i = 0; i < options.length; i++) {
-                System.out.println((i + 1) + ". " + options[i]);
-            }
+    public java.util.List<String> getOptions() {
+        return options;
+    }
 
-           
-            System.out.print("Digite seu CPF (apenas números): ");
-            String cpf = scanner.nextLine();
-            outputStream.writeObject(cpf);
-            outputStream.flush();
+    public String sendVote(String cpf, int option) {
+        try {
+            Vote vote = new Vote(cpf, option);
+            out.writeObject(vote);
+            return (String) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erro ao enviar voto";
+        }
+    }
 
-            String serverResponse = (String) inputStream.readObject();
-            if (!serverResponse.equals("CPF inválido ou já votou. Tente novamente.")) {
-                System.out.print("Escolha seu voto (número da opção): ");
-                int voteOption = scanner.nextInt();
-                outputStream.writeObject(options[voteOption - 1]);
-                outputStream.flush();
-                
-                serverResponse = (String) inputStream.readObject();
-                System.out.println(serverResponse);
-            } else {
-                System.out.println(serverResponse);
-            }
-        } finally {
-            socket.close();
+    public void disconnect() {
+        try {
+            if (socket != null) socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
-
