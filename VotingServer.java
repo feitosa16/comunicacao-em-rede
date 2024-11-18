@@ -7,8 +7,8 @@ import java.util.concurrent.*;
 
 public class VotingServer {
     private static final int PORT = 12345;
-    private static Set<String> voters = new HashSet<>(); // Armazena CPFs votados
-    private static Map<String, String> votes = new HashMap<>(); // Mapeia CPF para voto
+    private static Set<String> voters = new HashSet<>(); 
+    private static Map<String, String> votes = new HashMap<>(); 
     private static String question = "Qual a sua cor favorita?";
     private static String[] options = {"Azul", "Verde", "Vermelho"};
     
@@ -16,7 +16,7 @@ public class VotingServer {
         ServerSocket serverSocket = new ServerSocket(PORT);
         System.out.println("Servidor de votação iniciado...");
         
-        ExecutorService executor = Executors.newCachedThreadPool(); // Para atendimento multithread
+        ExecutorService executor = Executors.newCachedThreadPool(); 
         while (true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Novo cliente conectado: " + clientSocket.getInetAddress());
@@ -24,7 +24,7 @@ public class VotingServer {
         }
     }
 
-    // Classe para gerenciar a comunicação com cada cliente
+  
     static class VotingClientHandler implements Runnable {
         private Socket clientSocket;
 
@@ -37,12 +37,10 @@ public class VotingServer {
             try (ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
                  ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream())) {
                  
-                // Enviar pergunta e opções
                 outputStream.writeObject(question);
                 outputStream.writeObject(options);
                 outputStream.flush();
 
-                // Receber CPF e validar
                 String cpf = (String) inputStream.readObject();
                 if (!isValidCPF(cpf) || voters.contains(cpf)) {
                     outputStream.writeObject("CPF inválido ou já votou. Tente novamente.");
@@ -51,18 +49,14 @@ public class VotingServer {
                 }
                 voters.add(cpf);
                 
-                // Receber voto e armazenar
                 String vote = (String) inputStream.readObject();
                 votes.put(cpf, vote);
 
-                // Confirmar voto
                 outputStream.writeObject("Voto registrado com sucesso.");
                 outputStream.flush();
 
-                // Encerrar a conexão
                 clientSocket.close();
-                
-                // Exibir resultados parciais (opcional)
+ 
                 displayPartialResults();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
