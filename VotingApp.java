@@ -122,7 +122,7 @@ public class VotingApp extends JFrame {
             return;
         }
 
-        // Criar uma string formatada com os resultados
+        // Create string with results
         StringBuilder resultText = new StringBuilder();
         resultText.append("Resultados Parciais:\n\n");
         
@@ -141,35 +141,33 @@ public class VotingApp extends JFrame {
         
         resultText.append(String.format("\nTotal de votos: %d", totalVotes));
 
-        // Criar um diálogo personalizado para mostrar os resultados
+       
         JDialog resultsDialog = new JDialog(this, "Resultados Parciais", true);
         resultsDialog.setLayout(new BorderLayout(10, 10));
         
-        // Usar JTextArea para melhor formatação
+        // Jtextarea for better layout
         JTextArea textArea = new JTextArea(resultText.toString());
         textArea.setEditable(false);
         textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         textArea.setMargin(new Insets(10, 10, 10, 10));
         
-        // Adicionar scroll caso necessário
+        
         JScrollPane scrollPane = new JScrollPane(textArea);
         resultsDialog.add(scrollPane, BorderLayout.CENTER);
         
-        // Botão de fechar
+        
         JButton closeButton = new JButton("Fechar");
         closeButton.addActionListener(e -> resultsDialog.dispose());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(closeButton);
         resultsDialog.add(buttonPanel, BorderLayout.SOUTH);
         
-        // Configurar e mostrar o diálogo
         resultsDialog.setSize(400, 300);
         resultsDialog.setLocationRelativeTo(this);
         resultsDialog.setVisible(true);
     }
 
     private void generateReport() {
-        // Esta função seria implementada para gerar o relatório
     	if (client == null) {
             JOptionPane.showMessageDialog(this, "Conecte-se primeiro ao servidor!");
             return;
@@ -182,7 +180,7 @@ public class VotingApp extends JFrame {
         }
 
         try {
-            // Criar arquivo de relatório
+            // Create file for report
             File reportFile = new File("relatorio_votacao.txt");
             try (PrintWriter writer = new PrintWriter(reportFile)) {
                 writer.println("Relatório Completo da Votação");
@@ -215,7 +213,7 @@ public class VotingApp extends JFrame {
                 }
             }
 
-            // Mostrar mensagem de sucesso
+            
             JOptionPane.showMessageDialog(this, 
                 "Relatório gerado com sucesso!\nArquivo: " + reportFile.getAbsolutePath(),
                 "Relatório Gerado", 
