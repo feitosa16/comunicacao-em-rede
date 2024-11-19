@@ -15,7 +15,7 @@ public class VotingClient {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
             
-            // Solicitar dados da eleição
+            // Get election data
             out.writeObject("GET_ELECTION_DATA");
             question = (String) in.readObject();
             options = (java.util.List<String>) in.readObject();
